@@ -3,8 +3,9 @@
 
 int main()
 {
-    int a[3][3]={{8,1,6},{3,5,7},{4,9,2}};
+    int a[3][3]={{1,2,3},{2,4,7},{4,5,8}};
     int i,j,m,n,current,flag;
+
     for(i=0;i<3;i++){
         for(j=0;j<3;j++){
             flag=0;
@@ -20,5 +21,6 @@ int main()
             if(flag==6) printf("%d ",a[i][j]);
         }
     }
+
     return 0;
 }
