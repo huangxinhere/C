@@ -1,5 +1,6 @@
 # depslib dependency file v1.0
-1616576628 source:d:\clanguage\practice\temp\main.c
+1620879288 source:d:\clanguage\practice\temp\main.c
 	<stdio.h>
 	<stdlib.h>
+	<string.h>
 

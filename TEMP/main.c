@@ -1,27 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main()
 {
-    int n,i,t;
-    n=100;
-     while(n<200)
-     {
-         t=1;
-         i=2;
-         while(i<n/2)
-         {
-             if(n%i==0)
-             {
-                 t=0;
-                 break;
-             }
-             //if(n%i!=0)printf("%d",n);
-             i=i+1;
-         }
-         if(t!=0)printf("%d,",n);
-         n=n+1;
-     }
+    char c1[4]="qaq",c2[6]="haoye";
+    char c[400]={'\0'};
+    int x;
+    for(x=0;x<strlen(c1);x++)
+        c[x]=c1[x];
+    for(x=strlen(c1);x<strlen(c1)+strlen(c2);x++)
+        c[x]=c2[x-strlen(c1)];
+    puts(c);
     return 0;
-
 }
