@@ -9,9 +9,15 @@ int count = -1;
 struct 
 {
     char data[MaxSize];
-    int num[MaxSize];
+    float num[MaxSize];
     int top ;
-}op;  
+}stack;  
+
+//栈元素给新数组
+void func(char exp[]){
+    exp[++count] = stack.data[stack.top];
+    stack.top--;
+}
 
 void trans(char str[], char exp[]){
     //算数表达式str转换成后缀表达式exp
@@ -19,8 +25,7 @@ void trans(char str[], char exp[]){
     if (str == NULL)
         return;
 
-    op.top = -1;
-    
+    stack.top = -1;
     int i ;
     char ch = '1';
 
@@ -30,53 +35,51 @@ void trans(char str[], char exp[]){
         switch (ch)
         {
         /*对)处理*/
+        case '(':{
+            stack.data[++stack.top] = ch;
+        }break;
         case ')': {
-            for (; op.data[op.top] != '('; )//左括号以后的
+            for (; stack.data[stack.top] != '('; )//左括号以后的
             {
-                func(str,exp);                  //弹出栈的元素
+                func(exp);                      //弹出栈的元素给新数组
             }
-            op.top--;                       //弹出左括号,右括号不入栈
+            stack.top--;                       //弹出左括号,右括号不入栈
             
         }break;
 
         /*加减*/
-        case '+':                           //没有break，如果是“+”继续往下执行
+        case '+':                               //没有break，如果是“+”继续往下执行
         case '-':{
-            if(op.top >= 0){
-                for(;op.top >= 0;){         //使前面都出栈
-                    func(str,exp);
+            if(stack.top >= 0){
+                for(;stack.top >= 0 && stack.data[stack.top] != '(';){         //使前面都出栈
+                    func(exp);
                     }
             }
-            op.top++;                       //无论如何,从str读取的字符都入栈
-            op.data[op.top] = ch;
+            stack.data[++stack.top] = ch;         //无论如何,从str读取的字符都入栈
         }break;
 
         case '*':
         case '/':{
-            while (op.data[op.top] == '*' || op.data[op.top] == '/')
+            while (stack.data[stack.top] == '*' || stack.data[stack.top] == '/')
             {
-                func(str,exp);
+                func(exp);
             }
-            op.top++;
-            op.data[op.top] = ch;
-            
+            stack.data[++stack.top] = ch;
         }break;
 
         /*字母或者是数字，直接进入exp*/
         default:
             {
-                count++;               
-                exp[count] = ch;
+                exp[++count] = ch;
             }
-        
         }
     }
 
     /*取出栈内剩余的运算符*/
-    while (op.top >= 0)
+    count--;
+    while (stack.top >= 0)
     {
-        count--;
-        func(str,exp);
+        func(exp);
     }
 
     /*打印新的数组*/
@@ -84,32 +87,29 @@ void trans(char str[], char exp[]){
     {
         printf("%c",exp[i]);
     }
+    printf("\n");
     
 }
 
-void func(char str[], char exp[]){
-    count++;
-    exp[count] = op.data[op.top];
-    op.top--;
-}
-
 void transBack(char exp[]){
-    op.top = -1;
+    stack.top = -1;
     int temp = 0;
     float res = 0;
     char ch;
     ch = '1';
 
-    for (int i = 0; ch != '/0'; i++)
+    for (int i = 0; ch != '\0'; i++)
     {
         ch = exp[i];
 
         //化为整型,数字入栈
         if(ch <= '9' && ch >= '0'){
-            temp = atoi(ch) + temp*10;
-            op.top++;
-            op.num[op.top] = temp;
+            temp = (ch-48) + temp*10;
             continue;
+        }
+        else if(ch == '#'){
+            stack.num[++stack.top] = temp;
+            temp = 0;
         }
         //运算符运算
         else 
@@ -117,31 +117,33 @@ void transBack(char exp[]){
             switch (ch)
             {
             case '+':{
-                res = op.num[op.top] + op.num[op.top--];  //top已经减1?
-                op.num[op.top] = res;
+                res = stack.num[stack.top] + stack.num[--stack.top];  
+                stack.num[stack.top] = res;
             }break;
             case '-':{
-                res = fabs(op.num[op.top] - op.num[op.top--]);
-                op.num[op.top] = res;
+                res = fabs(stack.num[stack.top] - stack.num[--stack.top]);
+                stack.num[stack.top] = res;
             }break;
             case '*':{
-                res = op.num[op.top] * op.num[op.top--];
-                op.num[op.top] = res;
+                res = stack.num[stack.top] * stack.num[--stack.top];
+                stack.num[stack.top] = res;
             }break;
             case '/':{
-                res = op.num[op.top] / op.num[op.top--];
-                op.num[op.top] = res;
+                int a = stack.num[stack.top];
+                int b = stack.num[--stack.top];
+                res = a > b ? a/(float)b : b/(float)a;
+                stack.num[stack.top] = res;
             }break;
             }
         }   
     }
     //读取完毕,得出结果
     printf("The result is %f\n",res);
-    
 }
 
+
 int main(){
-    char str[] = "20#+2#*1#-2#";
+    char str[] = "50#-20#+7#*5#/2#+(88#-77#)";
     char res[50] = {'\0'};
     trans(str,res);
     transBack(res);

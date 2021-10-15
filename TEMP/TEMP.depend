@@ -1,4 +1,7 @@
 # depslib dependency file v1.0
-1632717337 source:d:\clanguage\practice\temp\main.c
+1634292524 source:d:\clanguage\practice\temp\main.c
 	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<math.h>
 
