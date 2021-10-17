@@ -20,9 +20,16 @@ typedef struct
 LinkList  head = NULL;
 Qu queue = NULL;
 
+void InitList();
+void CreateList(int n);
+void InList(ElemType e);
+void OutList();
+void EmptyList();
+void PrintList();
+
 void InitList(){
     head = (LinkList) malloc(sizeof(LNode));
-    queue = (Qu) malloc(sizeof(Queue));
+    queue = (Qu) malloc(sizeof(Queue));1
     (head)->next = head;
     (queue)->rear = head;
 }
