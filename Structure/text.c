@@ -1,111 +1,64 @@
-#include <stdio.h>
-#include <malloc.h>
-typedef int ElemType;
+#include<stdio.h>
+#include<malloc.h>
 
-/*仅带尾指针的单循环链表队列*/
+#define ElemType int
+#define OK 1
+#define ERROR 0
 
-//节点
-typedef struct LNode
-{
-    struct LNode *next; //不要忘了标明struct
-    ElemType data;
-}LNode,*LinkList;
+typedef struct qnode{
+	ElemType data;
+	struct qnode *next;
+}QNode;
 
-//带尾节点的队列
-typedef struct 
-{
-    LNode *rear;
-}*Qu,Queue;
-
-LinkList  head = NULL;
-Qu queue = NULL;
-
-void InitList(){
-    head = (LinkList) malloc(sizeof(LNode));
-    queue = (Qu) malloc(sizeof(Queue));
-    (head)->next = head;
-    (queue)->rear = head;
+int InitQueue(QNode *p){   // 初始化空队列 
+	p = (QNode*)malloc(sizeof(QNode));
+	if(p == NULL)
+		return ERROR;
+	p->next = p;
+	return OK;
 }
 
-void CreateList(int n){
-    LNode *p;
-    int flag = 0;
-
-//链表
-    for (int i = 0; i < n; i++)
-    {
-        //新节点
-        p = (LinkList) malloc(sizeof(LNode));
-        scanf("%d",&p->data);
-        p->next = NULL;
-        //尾指针指向第一个加入的节点
-        if(flag == i)
-            queue->rear = p;
-        //插入
-        p->next = (head)->next;
-        (head)->next = p;
-
-    }
-
-    printf("\nThe Link is created!!-----");
-    PrintList();
+int EnQueue(QNode *p, ElemType e){   // 入队列 
+	QNode *q;
+	q = p->next;
+	p->next = (QNode*)malloc(sizeof(QNode));
+	if(p->next == NULL)
+		return ERROR;
+	p = p->next;
+	p->data = e;
+	p->next = q;
+	return OK;
 }
 
-void InList(ElemType e){
-    LNode *s;
-    s = (LinkList) malloc(sizeof(LNode));
-    s->data = e;
-    queue->rear->next = s;
-    //
-    queue->rear = s;
-    queue->rear->next = head;
-
-    printf("\nThe list is inserted!!----");
-    PrintList();
+int DeQueue(QNode *p, ElemType *e){   // 出队列 
+	QNode *q;
+	if(p->next == p)
+		return ERROR;
+	q = p->next->next;
+	*e = q->data;
+	p->next->next = q->next;
+	free(q);
+	return OK;
 }
 
-void OutList(){
-    LNode *p;
-    p = head->next;
-    if(p != head){
-        head->next = p->next;
-        free(p);
-    }
-
-    printf("\nThe list is delete!!----");
-    PrintList();
-}
-
-void EmptyList(){
-    LNode *p;
-    p = head->next;
-    while(p != head){
-        head->next = p->next;
-        free(p);
-        p = head->next;
-    }
-    if(head->next == head)
-        printf("\nAlready empty!!");
-}
-
-void PrintList(){
-    LNode *p;
-    p = (head)->next;
-    while (p != head)
-    {
-        printf("%d ",p->data);
-        p = p->next;
-    }
-    
+void ClearQueue(QNode *p){   // 置空队列 
+	ElemType e;
+	while(p->next != p){
+		DeQueue(p, &e);
+		printf("%3d", e);
+	}
 }
 
 int main(){
-  
-    InitList();
-    CreateList(5);
-    InList(4);
-    OutList();
-    EmptyList();
-
-    return 0;
+	ElemType e;
+	QNode *p;
+	
+	if(InitQueue(p))
+		printf("初始化完成\n");
+	printf("输入队列数据：\n");
+	while(scanf("%d", &e))
+		EnQueue(p, e);
+	printf("输出队列数据：\n");
+	ClearQueue(p);
+	return 0;
 }

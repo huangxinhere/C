@@ -23,6 +23,7 @@
     "algorithm": "c",
     "functional": "c",
     "type_traits": "c",
-    "valarray": "c"
+    "valarray": "c",
+    "string.h": "c"
   }
 }
